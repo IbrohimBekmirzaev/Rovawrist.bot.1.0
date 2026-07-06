@@ -619,6 +619,78 @@ function getMessageTypeLabel(message = {}) {
     return 'Boshqa turdagi xabar';
 }
 
+function getSupportMessageHeadline(message = {}) {
+    if (message.photo) return '🖼 <b>Foydalanuvchi rasmi</b>';
+    if (message.video) return '🎥 <b>Foydalanuvchi videosi</b>';
+    if (message.animation) return '🎞 <b>Foydalanuvchi GIF xabari</b>';
+    if (message.document) return '📎 <b>Foydalanuvchi fayli</b>';
+    if (message.audio) return '🎵 <b>Foydalanuvchi audiosi</b>';
+    if (message.voice) return '🎤 <b>Foydalanuvchi ovozli xabari</b>';
+    if (message.video_note) return '📹 <b>Foydalanuvchi video note xabari</b>';
+    if (message.sticker) return '🌟 <b>Foydalanuvchi stickeri</b>';
+    if (message.contact) return '📞 <b>Foydalanuvchi kontakti</b>';
+    if (message.location) return '📍 <b>Foydalanuvchi lokatsiyasi</b>';
+    if (message.venue) return '📌 <b>Foydalanuvchi manzili</b>';
+    if (message.poll) return '📊 <b>Foydalanuvchi so‘rovnomasi</b>';
+    if (message.dice) return '🎲 <b>Foydalanuvchi dice xabari</b>';
+    return '💬 <b>Foydalanuvchi xabari</b>';
+}
+
+function getSupportMessageBody(message = {}) {
+    if (message.text) {
+        return cleanText(message.text, 3500);
+    }
+
+    if (message.caption) {
+        return cleanText(message.caption, 3500);
+    }
+
+    if (message.contact) {
+        return cleanText([
+            [message.contact.first_name, message.contact.last_name].filter(Boolean).join(' ').trim(),
+            message.contact.phone_number || ''
+        ].filter(Boolean).join('\n'), 3500);
+    }
+
+    if (message.venue) {
+        return cleanText([
+            message.venue.title || '',
+            message.venue.address || '',
+            message.venue.location
+                ? `${Number(message.venue.location.latitude).toFixed(6)}, ${Number(message.venue.location.longitude).toFixed(6)}`
+                : ''
+        ].filter(Boolean).join('\n'), 3500);
+    }
+
+    if (message.location) {
+        return cleanText(
+            `${Number(message.location.latitude).toFixed(6)}, ${Number(message.location.longitude).toFixed(6)}`,
+            3500
+        );
+    }
+
+    if (message.poll) {
+        return cleanText(message.poll.question || '', 3500);
+    }
+
+    if (message.dice) {
+        return cleanText(`${message.dice.emoji || ''} ${message.dice.value || ''}`.trim(), 3500);
+    }
+
+    return '';
+}
+
+function isCaptionableSupportMessage(message = {}) {
+    return Boolean(
+        message.photo ||
+        message.video ||
+        message.animation ||
+        message.document ||
+        message.audio ||
+        message.voice
+    );
+}
+
 function buildStartLog(user, userCount) {
     const language = cleanText(user.language_code || 'Nomaʼlum', 20);
     const premium = user.is_premium ? 'Ha' : 'Yoʻq';
@@ -661,6 +733,24 @@ function buildPendingStatusMeta(record = {}) {
         `🆔 <code>${escapeHtml(String(record.userId || ''))}</code>`,
         `📦 Xabar turi: ${escapeHtml(record.messageType || 'Matn')}`,
         record.preview ? `💬 ${escapeHtml(record.preview)}` : '💬 Matnsiz media xabar'
+    ].join('\n');
+}
+
+function buildSupportLogMessage(record = {}, options = {}) {
+    const bodyLimit = options.forCaption ? 180 : 2600;
+    const body = cleanText(record.body || '', bodyLimit);
+
+    return [
+        `<b>${escapeHtml(record.statusLabel || '⏳ Javob berilmagan')}</b>`,
+        `<b>${escapeHtml(record.categoryLabel || '🆘 Support soʻrov')}</b>`,
+        record.messageHeadline || '💬 <b>Foydalanuvchi xabari</b>',
+        `⏰ ${escapeHtml(record.createdAtLabel || nowUzbekistan())}`,
+        `👤 ${escapeHtml(record.fullName || 'Nomaʼlum')}`,
+        `🔗 ${escapeHtml(record.username || 'Yoʻq')}`,
+        `🆔 <code>${escapeHtml(String(record.userId || ''))}</code>`,
+        `UID: <code>${escapeHtml(String(record.userId || ''))}</code>`,
+        '',
+        body ? `<pre>${escapeHtml(body)}</pre>` : '💬 Matnsiz media xabar'
     ].join('\n');
 }
 
@@ -1357,6 +1447,20 @@ class TelegramRuntime {
 
         if (options.threadId) {
             payload.message_thread_id = Number(options.threadId);
+        }
+
+        if (options.replyToMessageId) {
+            payload.reply_parameters = {
+                message_id: Number(options.replyToMessageId)
+            };
+        }
+
+        if (options.caption) {
+            payload.caption = options.caption;
+        }
+
+        if (options.parseMode !== false) {
+            payload.parse_mode = options.parseMode || 'HTML';
         }
 
         return this.apiCall('copyMessage', payload);
@@ -2548,7 +2652,7 @@ class TelegramRuntime {
         try {
             const currentAction = this.getPendingAction(message.from?.id);
             const categoryLabel = currentAction === 'payment-proof' ? '💳 To‘lov cheki' : '🆘 Support soʻrov';
-            const preview = cleanText(message.text || message.caption || message.venue?.address || '', 240);
+            const body = getSupportMessageBody(message);
             const metaRecord = {
                 statusLabel: '⏳ Javob berilmagan',
                 categoryLabel,
@@ -2557,34 +2661,77 @@ class TelegramRuntime {
                 username: getUsername(message.from || {}),
                 userId: message.from?.id || '',
                 messageType: getMessageTypeLabel(message),
-                preview
+                preview: cleanText(body, 240),
+                body,
+                messageHeadline: getSupportMessageHeadline(message)
             };
 
-            const copied = await this.copyMessage(
-                this.logGroupId,
-                message.chat.id,
-                message.message_id,
-                { threadId: this.topicIds.unanswered }
-            );
+            let mapping = null;
 
-            const meta = await this.sendText(
-                this.logGroupId,
-                buildPendingStatusMeta(metaRecord),
-                {
-                    threadId: this.topicIds.unanswered,
-                    replyToMessageId: copied.message_id
-                }
-            );
+            if (message.text) {
+                const sent = await this.sendText(
+                    this.logGroupId,
+                    buildSupportLogMessage(metaRecord),
+                    { threadId: this.topicIds.unanswered }
+                );
 
-            const supportMapping = {
-                userId: message.chat.id,
-                copiedMessageId: copied.message_id,
-                metaMessageId: meta.message_id,
-                metaRecord
-            };
+                mapping = {
+                    userId: message.chat.id,
+                    copiedMessageId: sent.message_id,
+                    statusMessageId: sent.message_id,
+                    statusRenderMode: 'text',
+                    metaRecord
+                };
+            } else if (isCaptionableSupportMessage(message)) {
+                const copied = await this.copyMessage(
+                    this.logGroupId,
+                    message.chat.id,
+                    message.message_id,
+                    {
+                        threadId: this.topicIds.unanswered,
+                        caption: buildSupportLogMessage(metaRecord, { forCaption: true })
+                    }
+                );
 
-            this.rememberSupportMessage(copied.message_id, supportMapping);
-            this.rememberSupportMessage(meta.message_id, supportMapping);
+                mapping = {
+                    userId: message.chat.id,
+                    copiedMessageId: copied.message_id,
+                    statusMessageId: copied.message_id,
+                    statusRenderMode: 'caption',
+                    metaRecord
+                };
+            } else {
+                const meta = await this.sendText(
+                    this.logGroupId,
+                    buildSupportLogMessage(metaRecord),
+                    { threadId: this.topicIds.unanswered }
+                );
+
+                const copied = await this.copyMessage(
+                    this.logGroupId,
+                    message.chat.id,
+                    message.message_id,
+                    {
+                        threadId: this.topicIds.unanswered,
+                        replyToMessageId: meta.message_id,
+                        parseMode: false
+                    }
+                );
+
+                mapping = {
+                    userId: message.chat.id,
+                    copiedMessageId: copied.message_id,
+                    statusMessageId: meta.message_id,
+                    statusRenderMode: 'text',
+                    metaRecord
+                };
+            }
+
+            this.rememberSupportMessage(mapping.copiedMessageId, mapping);
+
+            if (mapping.statusMessageId && mapping.statusMessageId !== mapping.copiedMessageId) {
+                this.rememberSupportMessage(mapping.statusMessageId, mapping);
+            }
 
             if (currentAction === 'payment-proof') {
                 this.setSupportSession(message.from?.id, false);
@@ -2624,16 +2771,27 @@ class TelegramRuntime {
         try {
             await this.copyMessage(mapping.userId, message.chat.id, message.message_id);
 
-            if (mapping.metaMessageId && mapping.metaRecord) {
-                await this.editMessageText(
-                    this.logGroupId,
-                    mapping.metaMessageId,
-                    buildPendingStatusMeta({
-                        ...mapping.metaRecord,
-                        statusLabel: '✅ Javob berildi'
-                    }),
-                    {}
-                ).catch(() => {});
+            if (mapping.statusMessageId && mapping.metaRecord) {
+                const updatedRecord = {
+                    ...mapping.metaRecord,
+                    statusLabel: '✅ Javob berildi'
+                };
+
+                if (mapping.statusRenderMode === 'caption') {
+                    await this.editMessageCaption(
+                        this.logGroupId,
+                        mapping.statusMessageId,
+                        buildSupportLogMessage(updatedRecord, { forCaption: true }),
+                        {}
+                    ).catch(() => {});
+                } else {
+                    await this.editMessageText(
+                        this.logGroupId,
+                        mapping.statusMessageId,
+                        buildSupportLogMessage(updatedRecord),
+                        {}
+                    ).catch(() => {});
+                }
             }
         } catch (error) {
             await this.reportError('Admin javobini foydalanuvchiga yuborishda xatolik', error, {
