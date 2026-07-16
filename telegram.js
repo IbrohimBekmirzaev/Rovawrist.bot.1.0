@@ -74,6 +74,7 @@ const PAYMENT_CARD_HOLDER = 'IZBASAROV DIOR TIMUROVICH';
 const MAIN_MENU_BUTTON_ORDER = 'Buyurtma berish';
 const MAIN_MENU_BUTTON_SUPPORT = 'Support';
 const PRODUCT_CALLBACK_PREFIX = 'order:';
+const SUPPORTED_LANGUAGES = ['uz', 'ru', 'en'];
 const PRODUCT_COPY = {
     uz: {
         greeting: 'Salom',
