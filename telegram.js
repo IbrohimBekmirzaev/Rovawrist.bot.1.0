@@ -1,10 +1,11 @@
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 require('dotenv').config();
 
 const DATA_DIR = path.join(__dirname, 'data');
 const STATE_FILE = path.join(DATA_DIR, 'bot-state.json');
-const POLLING_LOCK_FILE = path.join(DATA_DIR, 'telegram-poll.lock.json');
+const GLOBAL_RUNTIME_DIR = path.join(process.env.LOCALAPPDATA || os.homedir(), 'RovawristBotRuntime');
 const POLLING_LOCK_HEARTBEAT_MS = 10000;
 const POLLING_LOCK_STALE_MS = 45000;
 const ASSETS_DIR = path.join(__dirname, 'assets');
@@ -62,7 +63,9 @@ const PRODUCT_CATALOG = {
     }
 };
 
-const PRODUCT_PRICE_TEXT = '45$';
+const PRODUCT_PRICE_USD = '45$';
+const PRODUCT_PRICE_UZS = '560 000 so‘m';
+const PRODUCT_PRICE_TEXT = `${PRODUCT_PRICE_USD} / ${PRODUCT_PRICE_UZS}`;
 const PRODUCT_DELIVERY_NOTE = 'Yetkazib berish to‘lovi alohida.';
 const PAYMENT_IMAGE = path.join(ASSETS_DIR, 'payment-instructions.png');
 const PAYMENT_UZCARD = '5614 6814 2200 4352';
@@ -71,18 +74,11 @@ const PAYMENT_CARD_HOLDER = 'IZBASAROV DIOR TIMUROVICH';
 const MAIN_MENU_BUTTON_ORDER = 'Buyurtma berish';
 const MAIN_MENU_BUTTON_SUPPORT = 'Support';
 const PRODUCT_CALLBACK_PREFIX = 'order:';
-const SUPPORTED_LANGUAGES = ['uz', 'ru', 'en'];
-const LANGUAGE_BUTTONS = {
-    uz: 'O‘zbek',
-    ru: 'Русский',
-    en: 'English'
-};
 const PRODUCT_COPY = {
     uz: {
         greeting: 'Salom',
         menuOrder: 'Buyurtma berish',
         menuSupport: 'Support',
-        chooseLanguage: 'Tilni tanlang:',
         joinChannelPrompt: '❗ Botdan foydalanish uchun quyida keltirilgan kanallarga a’zo bo‘ling va "tekshirish" tugmasiga bosing. 👇',
         checkSubscriptionButton: 'Tekshirish',
         subscriptionConfirmed: 'A’zolik tasdiqlandi.',
@@ -135,7 +131,6 @@ const PRODUCT_COPY = {
         greeting: 'Здравствуйте',
         menuOrder: 'Заказать',
         menuSupport: 'Поддержка',
-        chooseLanguage: 'Выберите язык:',
         joinChannelPrompt: '❗ Чтобы пользоваться ботом, подпишитесь на каналы ниже и нажмите кнопку "Проверить". 👇',
         checkSubscriptionButton: 'Проверить',
         subscriptionConfirmed: 'Подписка подтверждена.',
@@ -188,7 +183,6 @@ const PRODUCT_COPY = {
         greeting: 'Hello',
         menuOrder: 'Place order',
         menuSupport: 'Support',
-        chooseLanguage: 'Choose a language:',
         joinChannelPrompt: '❗ To use the bot, join the channels below and press "Check". 👇',
         checkSubscriptionButton: 'Check',
         subscriptionConfirmed: 'Subscription confirmed.',
@@ -240,7 +234,7 @@ const PRODUCT_COPY = {
 };
 
 const INTERNATIONAL_PHONE_PATTERN = /^\+\d{7,15}$/;
-const SUBSCRIPTION_CACHE_TTL_MS = 3 * 60 * 1000;
+const SUBSCRIPTION_CACHE_TTL_MS = 10 * 60 * 1000;
 
 const defaultState = {
     startedUsers: {},
@@ -258,6 +252,14 @@ const defaultState = {
 function ensureDataDir() {
     if (!fs.existsSync(DATA_DIR)) {
         fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+}
+
+function ensureParentDir(filePath) {
+    const directory = path.dirname(filePath);
+
+    if (!fs.existsSync(directory)) {
+        fs.mkdirSync(directory, { recursive: true });
     }
 }
 
@@ -301,12 +303,14 @@ let isStateWriteInFlight = false;
 let shouldSaveStateAgain = false;
 
 function atomicWriteFileSync(filePath, data) {
+    ensureParentDir(filePath);
     const tempPath = `${filePath}.tmp-${process.pid}`;
     fs.writeFileSync(tempPath, data, 'utf8');
     fs.renameSync(tempPath, filePath);
 }
 
 function atomicWriteFile(filePath, data, callback) {
+    ensureParentDir(filePath);
     const tempPath = `${filePath}.tmp-${process.pid}`;
 
     fs.writeFile(tempPath, data, 'utf8', (writeError) => {
@@ -388,7 +392,7 @@ function readJsonFile(filePath) {
 }
 
 function writeJsonFile(filePath, data) {
-    ensureDataDir();
+    ensureParentDir(filePath);
     atomicWriteFileSync(filePath, JSON.stringify(data, null, 2));
 }
 
@@ -783,11 +787,7 @@ function getMainMenuReplyMarkup(language = 'uz') {
     return {
         inline_keyboard: [
             [{ text: copy.menuOrder, callback_data: 'menu:buy' }],
-            [{ text: copy.menuSupport, callback_data: 'menu:support' }],
-            SUPPORTED_LANGUAGES.map((lang) => ({
-                text: LANGUAGE_BUTTONS[lang],
-                callback_data: `lang:${lang}`
-            }))
+            [{ text: copy.menuSupport, callback_data: 'menu:support' }]
         ]
     };
 }
@@ -867,11 +867,7 @@ function getSubscriptionInlineKeyboard(language = 'uz') {
             ])),
             [
                 { text: `✅ ${copy.checkSubscriptionButton}`, callback_data: 'channel:check' }
-            ],
-            SUPPORTED_LANGUAGES.map((lang) => ({
-                text: LANGUAGE_BUTTONS[lang],
-                callback_data: `lang:${lang}`
-            }))
+            ]
         ]
     };
 }
@@ -902,16 +898,10 @@ function buildProductShowcaseCaption(language = 'uz') {
 }
 
 function getAllLocalizedValues(fieldName) {
-    return SUPPORTED_LANGUAGES
+    return ['uz']
         .map((language) => getLanguageCopy(language)[fieldName])
         .filter(Boolean)
         .map((value) => cleanText(value, 120).toLowerCase());
-}
-
-function resolveLanguageFromText(value = '') {
-    const normalized = cleanText(value, 40).toLowerCase();
-
-    return Object.entries(LANGUAGE_BUTTONS).find(([, label]) => cleanText(label, 40).toLowerCase() === normalized)?.[0] || '';
 }
 
 function translateErrorTitle(title = '') {
@@ -1094,8 +1084,11 @@ class TelegramRuntime {
         this.initPromise = null;
         this.hasPollingLock = false;
         this.pollingLockHeartbeatTimer = null;
+        this.pollingLockFile = path.join(GLOBAL_RUNTIME_DIR, 'telegram-poll.lock.json');
         this.subscriptionCache = new Map();
         this.fileBufferCache = new Map();
+        this.recentUserActions = new Map();
+        this.recentUiDispatches = new Map();
     }
 
     hasBotToken() {
@@ -1554,6 +1547,13 @@ class TelegramRuntime {
         return subscribed;
     }
 
+    setSubscriptionCache(userId, subscribed) {
+        this.subscriptionCache.set(toIdString(userId), {
+            subscribed: Boolean(subscribed),
+            expiresAt: Date.now() + SUBSCRIPTION_CACHE_TTL_MS
+        });
+    }
+
     async isUserSubscribedToRequiredChannels(userId) {
         for (const channel of REQUIRED_CHANNELS) {
             try {
@@ -1588,6 +1588,14 @@ class TelegramRuntime {
     }
 
     async sendMainMenu(chatId, user = {}) {
+        if (this.getOrderSession(user.id) || this.isInSupportSession(user.id)) {
+            return null;
+        }
+
+        if (this.isDuplicateUiDispatch(chatId, 'main-menu')) {
+            return null;
+        }
+
         const language = this.getUserLanguage(user.id);
         const copy = getLanguageCopy(language);
 
@@ -1599,23 +1607,12 @@ class TelegramRuntime {
         ].join('\n'), getMainMenuReplyMarkup(language));
     }
 
-    async sendLanguageSelector(chatId, user = {}) {
-        const language = this.getUserLanguage(user.id);
-        const copy = getLanguageCopy(language);
-
-        await this.sendInlineFlowText(
-            chatId,
-            escapeHtml(copy.joinChannelPrompt),
-            getSubscriptionInlineKeyboard(language)
-        );
-    }
-
     async ensureSubscriptionOrPrompt(chatId, user = {}, pendingAction = 'menu') {
         const language = this.getUserLanguage(user.id);
         const copy = getLanguageCopy(language);
 
         try {
-            if (await this.isUserSubscribedToRequiredChannels(user.id)) {
+            if (await this.isUserSubscribedToRequiredChannelsCached(user.id)) {
                 this.setPendingAction(user.id, pendingAction);
                 return true;
             }
@@ -1655,6 +1652,43 @@ class TelegramRuntime {
             getPaymentCaption(language),
             getPaymentInlineKeyboard(language)
         );
+    }
+
+    async remindOrderStep(chatId, user = {}) {
+        const session = this.getOrderSession(user.id);
+
+        if (!session) {
+            return false;
+        }
+
+        const language = this.getUserLanguage(user.id);
+        const copy = getLanguageCopy(language);
+
+        if (session.step === 'phone') {
+            await this.sendFlowText(chatId, [
+                copy.phonePrompt,
+                copy.phoneExample
+            ].join('\n\n'), {
+                replyMarkup: getPhoneReplyMarkup(language)
+            });
+            return true;
+        }
+
+        if (session.step === 'fullName') {
+            await this.sendFlowText(chatId, copy.fullNamePrompt, {
+                replyMarkup: getInputReplyMarkup()
+            });
+            return true;
+        }
+
+        if (session.step === 'address') {
+            await this.sendFlowText(chatId, copy.addressPrompt, {
+                replyMarkup: getAddressReplyMarkup(language)
+            });
+            return true;
+        }
+
+        return false;
     }
 
     async continuePendingAction(chatId, user = {}) {
@@ -1798,13 +1832,13 @@ class TelegramRuntime {
 
         this.pollingLockHeartbeatTimer = setInterval(() => {
             try {
-                const currentLock = readJsonFile(POLLING_LOCK_FILE);
+                const currentLock = readJsonFile(this.pollingLockFile);
 
                 if (!currentLock || Number(currentLock.pid) !== process.pid) {
                     return;
                 }
 
-                writeJsonFile(POLLING_LOCK_FILE, {
+                writeJsonFile(this.pollingLockFile, {
                     ...currentLock,
                     pid: process.pid,
                     heartbeatAt: new Date().toISOString()
@@ -1829,7 +1863,7 @@ class TelegramRuntime {
     }
 
     acquirePollingLock() {
-        const currentLock = readJsonFile(POLLING_LOCK_FILE);
+        const currentLock = readJsonFile(this.pollingLockFile);
 
         if (
             currentLock?.pid &&
@@ -1840,7 +1874,7 @@ class TelegramRuntime {
             return false;
         }
 
-        writeJsonFile(POLLING_LOCK_FILE, {
+        writeJsonFile(this.pollingLockFile, {
             pid: process.pid,
             acquiredAt: new Date().toISOString(),
             heartbeatAt: new Date().toISOString()
@@ -1852,7 +1886,7 @@ class TelegramRuntime {
     }
 
     getPollingLockOwner() {
-        const currentLock = readJsonFile(POLLING_LOCK_FILE);
+        const currentLock = readJsonFile(this.pollingLockFile);
 
         if (
             currentLock?.pid &&
@@ -1873,10 +1907,10 @@ class TelegramRuntime {
             return;
         }
 
-        const currentLock = readJsonFile(POLLING_LOCK_FILE);
+        const currentLock = readJsonFile(this.pollingLockFile);
 
-        if (currentLock?.pid === process.pid && fs.existsSync(POLLING_LOCK_FILE)) {
-            fs.unlinkSync(POLLING_LOCK_FILE);
+        if (currentLock?.pid === process.pid && fs.existsSync(this.pollingLockFile)) {
+            fs.unlinkSync(this.pollingLockFile);
         }
 
         this.hasPollingLock = false;
@@ -2085,6 +2119,32 @@ class TelegramRuntime {
         saveState(this.state);
     }
 
+    isDuplicateUserAction(userId, actionKey, ttlMs = 4000) {
+        const key = `${toIdString(userId)}:${actionKey}`;
+        const now = Date.now();
+        const lastSeenAt = this.recentUserActions.get(key) || 0;
+
+        if (lastSeenAt && now - lastSeenAt < ttlMs) {
+            return true;
+        }
+
+        this.recentUserActions.set(key, now);
+        return false;
+    }
+
+    isDuplicateUiDispatch(chatId, dispatchKey, ttlMs = 2500) {
+        const key = `${toIdString(chatId)}:${dispatchKey}`;
+        const now = Date.now();
+        const lastSentAt = this.recentUiDispatches.get(key) || 0;
+
+        if (lastSentAt && now - lastSentAt < ttlMs) {
+            return true;
+        }
+
+        this.recentUiDispatches.set(key, now);
+        return false;
+    }
+
     rememberArchivedMessage(chatId, payload = {}) {
         const chatKey = toIdString(chatId);
 
@@ -2150,26 +2210,6 @@ class TelegramRuntime {
 
     async handleCallbackQuery(callbackQuery) {
         const callbackData = cleanText(callbackQuery?.data || '', 120);
-
-        if (callbackData.startsWith('lang:')) {
-            const selectedLanguage = normalizeLanguage(callbackData.slice('lang:'.length));
-            this.setUserLanguage(callbackQuery.from?.id, selectedLanguage);
-
-            await this.answerCallbackQuery(callbackQuery.id, {
-                text: LANGUAGE_BUTTONS[selectedLanguage] || 'Language updated'
-            });
-
-            if (callbackQuery.message?.chat?.id) {
-                if (await this.ensureSubscriptionOrPrompt(
-                    callbackQuery.message.chat.id,
-                    callbackQuery.from || {},
-                    this.getPendingAction(callbackQuery.from?.id) || 'menu'
-                )) {
-                    await this.continuePendingAction(callbackQuery.message.chat.id, callbackQuery.from || {});
-                }
-            }
-            return;
-        }
 
         if (callbackData === 'menu:buy' || callbackData === 'menu:support') {
             const pendingAction = callbackData === 'menu:buy' ? 'buy' : 'support';
@@ -2239,12 +2279,15 @@ class TelegramRuntime {
                 const isSubscribed = await this.isUserSubscribedToRequiredChannels(callbackQuery.from?.id);
 
                 if (!isSubscribed) {
+                    this.setSubscriptionCache(callbackQuery.from?.id, false);
                     await this.answerCallbackQuery(callbackQuery.id, {
                         text: copy.subscriptionRequired,
                         showAlert: true
                     });
                     return;
                 }
+
+                this.setSubscriptionCache(callbackQuery.from?.id, true);
 
             await this.answerCallbackQuery(callbackQuery.id, {
                 text: copy.subscriptionConfirmed
@@ -2288,7 +2331,7 @@ class TelegramRuntime {
         }
 
         try {
-            const isSubscribed = await this.isUserSubscribedToRequiredChannels(callbackQuery.from?.id);
+            const isSubscribed = await this.isUserSubscribedToRequiredChannelsCached(callbackQuery.from?.id);
 
             if (!isSubscribed) {
                 this.setPendingStartPayload(callbackQuery.from?.id, `buy_${productKey}`);
@@ -2299,7 +2342,7 @@ class TelegramRuntime {
                 });
 
                 if (callbackQuery.message?.chat?.id) {
-                    await this.sendLanguageSelector(callbackQuery.message.chat.id, callbackQuery.from || {});
+                    await this.ensureSubscriptionOrPrompt(callbackQuery.message.chat.id, callbackQuery.from || {}, 'buy');
                 }
                 return;
             }
@@ -2530,6 +2573,10 @@ class TelegramRuntime {
         });
 
         if (this.isCommand(message, ['start'])) {
+            if (this.isDuplicateUserAction(user.id, 'start')) {
+                return;
+            }
+
             this.setUserLanguage(user.id, 'uz');
             this.state.startedUsers[userId] = {
                 id: user.id,
@@ -2557,14 +2604,17 @@ class TelegramRuntime {
             return;
         }
 
-        const selectedLanguage = resolveLanguageFromText(message.text || '');
+        if (await this.continueOrderFlow(message)) {
+            return;
+        }
 
-        if (selectedLanguage) {
-            this.setUserLanguage(user.id, selectedLanguage);
+        if (this.getOrderSession(user.id)) {
+            await this.remindOrderStep(message.chat.id, user);
+            return;
+        }
 
-            if (await this.ensureSubscriptionOrPrompt(message.chat.id, user, this.getPendingAction(user.id) || 'menu')) {
-                await this.continuePendingAction(message.chat.id, user);
-            }
+        if (this.isInSupportSession(user.id)) {
+            await this.forwardSupportMessage(message);
             return;
         }
 
@@ -2629,15 +2679,6 @@ class TelegramRuntime {
                 'Faol support yoki buyurtma rejimi bekor qilindi.',
                 getMainMenuReplyMarkup(this.getUserLanguage(user.id))
             );
-            return;
-        }
-
-        if (await this.continueOrderFlow(message)) {
-            return;
-        }
-
-        if (this.isInSupportSession(user.id)) {
-            await this.forwardSupportMessage(message);
             return;
         }
 
