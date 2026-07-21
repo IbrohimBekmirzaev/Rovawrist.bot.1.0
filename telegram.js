@@ -116,6 +116,11 @@ const PRODUCT_COPY = {
             '📱 G Band ilovasi (iOS 13+ / Android 8+)'
         ],
         colorPrompt: '🎨 Rangni tanlang 👇',
+        orderReviewTitle: '📋 BUYURTMANGIZNI TEKSHIRING:',
+        totalLabel: 'Jami',
+        orderReviewQuestion: 'Hammasi to‘g‘rimi?',
+        confirmYesButton: '✅ Ha, davom etish',
+        confirmEditButton: '✏️ O‘zgartirish',
         orderAccepted: 'Buyurtmangiz qabul qilindi',
         operatorFollowUp: 'Operator siz bilan tez orada bog‘lanadi.',
         notFound: 'Mahsulot topilmadi.',
@@ -128,7 +133,7 @@ const PRODUCT_COPY = {
         invalidPhonePrompt: 'Telefon raqam noto‘g‘ri. Iltimos, <code>+998 90 123 45 67</code> yoki boshqa xalqaro formatda yuboring, yoxud tugma orqali ulashing.',
         fullNamePrompt: 'Endi ism va familiyangizni yuboring.',
         invalidFullNamePrompt: 'Ism va familiya noto‘g‘ri. Iltimos, faqat harflar bilan to‘liq ism va familiyangizni yuboring.',
-        addressPrompt: 'Yetkazib berish uchun manzilni yuboring:\n\n📝 Aniq manzilingizni matn ko‘rinishida yozing,\n\nYOKI\n\n📎 xabar oynasidagi qog‘oz qisqich belgisini bosing → <b>Location</b> ni tanlang → xaritada kerakli nuqtani bosib/surib belgilang → <b>Send Selected Location</b> tugmasini bosing.\n\n<i>(Eslatma: pastdagi «📍 Joriy joylashuvni yuborish» tugmasi hozir turgan joyingizni yuboradi, boshqa manzilni emas.)</i>',
+        addressPrompt: '📍 Yetkazib berish manzilini yuboring:\n\n✍️ Shahar, tuman, ko‘cha, uy — matn bilan yozing.\nMasalan: <i>Toshkent, Chilonzor, Bunyodkor 12, 45-uy</i>\n\n📎 <b>YOKI</b> xaritadan yuboring: skrepka → <b>Location</b> → nuqtani tanlang → <b>Send</b>\n\n⚠️ Pastdagi «📍 Joriy joylashuvni yuborish» tugmasi hozir turgan joyingizni yuboradi — boshqa manzil kerak bo‘lsa, xaritadan tanlang.',
         locationButton: '📍 Joriy joylashuvni yuborish',
         invalidAddressPrompt: 'Manzil noto‘g‘ri. Iltimos, ko‘cha, uy raqami va kerak bo‘lsa mo‘ljal bilan aniq manzil yuboring.',
         locationSaved: 'Kartadan aniq lokatsiya qabul qilindi.',
@@ -174,6 +179,11 @@ const PRODUCT_COPY = {
             '📱 Приложение G Band (iOS 13+ / Android 8+)'
         ],
         colorPrompt: '🎨 Выберите цвет 👇',
+        orderReviewTitle: '📋 ПРОВЕРЬТЕ ВАШ ЗАКАЗ:',
+        totalLabel: 'Итого',
+        orderReviewQuestion: 'Всё верно?',
+        confirmYesButton: '✅ Да, продолжить',
+        confirmEditButton: '✏️ Изменить',
         orderAccepted: 'Ваш заказ принят',
         operatorFollowUp: 'Оператор скоро свяжется с вами.',
         notFound: 'Товар не найден.',
@@ -186,7 +196,7 @@ const PRODUCT_COPY = {
         invalidPhonePrompt: 'Неверный номер. Отправьте его в формате <code>+998 90 123 45 67</code> или в другом международном формате, либо через кнопку ниже.',
         fullNamePrompt: 'Теперь отправьте имя и фамилию.',
         invalidFullNamePrompt: 'Имя и фамилия указаны неверно. Пожалуйста, отправьте полные имя и фамилию только буквами.',
-        addressPrompt: 'Отправьте адрес доставки:\n\n📝 Напишите точный адрес текстом,\n\nЛИБО\n\n📎 нажмите значок скрепки рядом с полем ввода → выберите <b>Location</b> → отметьте нужную точку на карте (нажатием или перетаскиванием) → нажмите <b>Send Selected Location</b>.\n\n<i>(Кнопка «📍 Отправить текущую геолокацию» ниже отправляет именно ваше текущее местоположение, а не выбранный адрес.)</i>',
+        addressPrompt: '📍 Отправьте адрес доставки:\n\n✍️ Город, район, улица, дом — напишите текстом.\nНапример: <i>Ташкент, Чиланзар, Бунёдкор 12, кв. 45</i>\n\n📎 <b>ИЛИ</b> через карту: скрепка → <b>Location</b> → отметьте точку → <b>Send</b>\n\n⚠️ Кнопка «📍 Отправить текущую геолокацию» ниже отправляет именно ваше текущее местоположение — если нужен другой адрес, выберите его на карте.',
         locationButton: '📍 Отправить текущую геолокацию',
         invalidAddressPrompt: 'Адрес указан неверно. Пожалуйста, отправьте точный адрес с улицей, номером дома и при необходимости ориентиром.',
         locationSaved: 'Точная геолокация получена.',
@@ -232,6 +242,11 @@ const PRODUCT_COPY = {
             '📱 G Band app (iOS 13+ / Android 8+)'
         ],
         colorPrompt: '🎨 Choose a color 👇',
+        orderReviewTitle: '📋 REVIEW YOUR ORDER:',
+        totalLabel: 'Total',
+        orderReviewQuestion: 'Is everything correct?',
+        confirmYesButton: '✅ Yes, continue',
+        confirmEditButton: '✏️ Edit',
         orderAccepted: 'Your order has been accepted',
         operatorFollowUp: 'Our operator will contact you soon.',
         notFound: 'Product not found.',
@@ -244,7 +259,7 @@ const PRODUCT_COPY = {
         invalidPhonePrompt: 'Invalid phone number. Please send it as <code>+998 90 123 45 67</code> or another international format, or share it using the button below.',
         fullNamePrompt: 'Now send your first and last name.',
         invalidFullNamePrompt: 'Name is invalid. Please send your full first and last name using letters only.',
-        addressPrompt: 'Send your delivery address:\n\n📝 Type your exact address as text,\n\nOR\n\n📎 tap the paperclip icon next to the message box → choose <b>Location</b> → tap or drag the pin to the exact spot on the map → tap <b>Send Selected Location</b>.\n\n<i>(The "📍 Send current location" button below sends your current position, not a chosen address.)</i>',
+        addressPrompt: '📍 Send your delivery address:\n\n✍️ City, district, street, house — type it as text.\nExample: <i>Tashkent, Chilonzor, Bunyodkor 12, apt 45</i>\n\n📎 <b>OR</b> send via map: paperclip → <b>Location</b> → pick the spot → <b>Send</b>\n\n⚠️ The "📍 Send current location" button below sends your current position — if you need a different address, choose it on the map.',
         locationButton: '📍 Send current location',
         invalidAddressPrompt: 'Address is invalid. Please send a clear address with street, house number, and landmark if needed.',
         locationSaved: 'Exact map location received.',
@@ -932,6 +947,31 @@ function buildProductShowcaseCaption(language = 'uz') {
         '',
         escapeHtml(copy.colorPrompt)
     ].join('\n');
+}
+
+function buildOrderReviewMessage(order, copy) {
+    return [
+        escapeHtml(copy.orderReviewTitle),
+        '',
+        `⌚ ${escapeHtml(order.productLabel)}`,
+        `👤 ${escapeHtml(order.fullName)}`,
+        `📱 ${escapeHtml(order.phone)}`,
+        `📍 ${escapeHtml(order.address || order.city || '')}`,
+        `💰 ${escapeHtml(copy.totalLabel)}: ${escapeHtml(PRODUCT_PRICE_TEXT)}`,
+        '',
+        escapeHtml(copy.orderReviewQuestion)
+    ].join('\n');
+}
+
+function getOrderReviewInlineKeyboard(language = 'uz') {
+    const copy = getLanguageCopy(language);
+
+    return {
+        inline_keyboard: [[
+            { text: copy.confirmYesButton, callback_data: 'confirm:yes' },
+            { text: copy.confirmEditButton, callback_data: 'confirm:edit' }
+        ]]
+    };
 }
 
 function getAllLocalizedValues(fieldName) {
@@ -1727,6 +1767,15 @@ class TelegramRuntime {
             return true;
         }
 
+        if (session.step === 'confirm') {
+            await this.sendInlineFlowText(
+                chatId,
+                buildOrderReviewMessage(session.order, copy),
+                getOrderReviewInlineKeyboard(language)
+            );
+            return true;
+        }
+
         return false;
     }
 
@@ -2334,6 +2383,54 @@ class TelegramRuntime {
             return;
         }
 
+        if (callbackData === 'confirm:yes' || callbackData === 'confirm:edit') {
+            const userId = callbackQuery.from?.id;
+            const chatId = callbackQuery.message?.chat?.id;
+            const session = this.getOrderSession(userId);
+            const language = this.getUserLanguage(userId);
+            const copy = getLanguageCopy(language);
+
+            if (!session || session.step !== 'confirm') {
+                await this.answerCallbackQuery(callbackQuery.id);
+                return;
+            }
+
+            await this.answerCallbackQuery(callbackQuery.id);
+
+            if (!chatId) {
+                return;
+            }
+
+            if (callbackData === 'confirm:edit') {
+                session.step = 'phone';
+                delete session.order.phone;
+                delete session.order.fullName;
+                delete session.order.address;
+                delete session.order.city;
+                delete session.order.location;
+                delete session.order.message;
+                this.setOrderSession(userId, session);
+
+                await this.sendFlowText(chatId, [
+                    copy.phonePrompt,
+                    copy.phoneExample
+                ].join('\n\n'), {
+                    replyMarkup: getPhoneReplyMarkup(language)
+                });
+                return;
+            }
+
+            await this.sendWebsiteOrder(session.order, {
+                source: 'Telegram bot',
+                telegramUserId: userId,
+                telegramUsername: getUsername(callbackQuery.from || {})
+            });
+
+            this.clearOrderSession(userId);
+            await this.sendPaymentInstructions(chatId, callbackQuery.from || {});
+            return;
+        }
+
         if (callbackData === 'payment:done') {
             const language = this.getUserLanguage(callbackQuery.from?.id);
             const copy = getLanguageCopy(language);
@@ -2510,6 +2607,15 @@ class TelegramRuntime {
         const venue = message.venue || null;
         const removeUserReply = async () => {};
 
+        if (session.step === 'confirm') {
+            await this.sendInlineFlowText(
+                chatId,
+                buildOrderReviewMessage(session.order, copy),
+                getOrderReviewInlineKeyboard(language)
+            );
+            return true;
+        }
+
         if (session.step === 'address' && location) {
             const venueAddress = cleanText([venue?.title, venue?.address].filter(Boolean).join(', '), 180);
 
@@ -2520,16 +2626,15 @@ class TelegramRuntime {
                 longitude: Number(location.longitude)
             };
             session.order.message = '';
+            session.step = 'confirm';
+            this.setOrderSession(user.id, session);
 
-            await this.sendWebsiteOrder(session.order, {
-                source: 'Telegram bot',
-                telegramUserId: user.id,
-                telegramUsername: getUsername(user)
-            });
-
-            this.clearOrderSession(user.id);
             await removeUserReply();
-            await this.sendPaymentInstructions(chatId, user);
+            await this.sendInlineFlowText(
+                chatId,
+                buildOrderReviewMessage(session.order, copy),
+                getOrderReviewInlineKeyboard(language)
+            );
             return true;
         }
 
@@ -2629,16 +2734,15 @@ class TelegramRuntime {
             session.order.city = text;
             session.order.location = null;
             session.order.message = '';
+            session.step = 'confirm';
+            this.setOrderSession(user.id, session);
 
-            await this.sendWebsiteOrder(session.order, {
-                source: 'Telegram bot',
-                telegramUserId: user.id,
-                telegramUsername: getUsername(user)
-            });
-
-            this.clearOrderSession(user.id);
             await removeUserReply();
-            await this.sendPaymentInstructions(chatId, user);
+            await this.sendInlineFlowText(
+                chatId,
+                buildOrderReviewMessage(session.order, copy),
+                getOrderReviewInlineKeyboard(language)
+            );
             return true;
         }
 
