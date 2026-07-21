@@ -1257,11 +1257,13 @@ class TelegramRuntime {
         process.on('SIGINT', () => {
             this.stopPolling();
             this.releasePollingLock();
+            process.exit(0);
         });
 
         process.on('SIGTERM', () => {
             this.stopPolling();
             this.releasePollingLock();
+            process.exit(0);
         });
 
         process.on('exit', () => {
