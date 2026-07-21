@@ -2654,8 +2654,7 @@ class TelegramRuntime {
             }
 
             this.setPendingStartPayload(user.id, startPayload);
-            const pendingAction =
-                startPayload === 'buy' || startPayload === 'buy_prod1' || startPayload === 'buy_prod2' ? 'buy' : 'menu';
+            const pendingAction = 'buy';
             this.setPendingAction(user.id, pendingAction);
 
             if (await this.ensureSubscriptionOrPrompt(message.chat.id, user, pendingAction)) {
