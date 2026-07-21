@@ -148,7 +148,15 @@ const PRODUCT_COPY = {
         copyUzcardButton: '📋 Uzcard nusxalash',
         copyVisaButton: '📋 Visa nusxalash',
         paymentProofPrompt: 'To‘lov chekini screenshot yoki PDF ko‘rinishida yuboring.',
-        paymentProofAccepted: '✅ To‘lov qilindi statusi qo‘yildi. Administrator to‘lovni tekshiradi.'
+        paymentAcceptedGreeting: '✅ Rahmat, {name}! To‘lovingiz qabul qilindi.',
+        paymentNextStepsTitle: '📦 ENDI NIMA BO‘LADI:',
+        paymentNextSteps: [
+            '1️⃣ 1-2 soat ichida to‘lovni tasdiqlaymiz',
+            '2️⃣ Brasletingizni shaxsan tekshirib, qadoqlaymiz'
+        ],
+        paymentWelcomeNote: '⌚ ROVA oilasiga xush kelibsiz!',
+        paymentSupportNote: 'Savollar bo‘lsa — Support tugmasi, shaxsan javob beraman.',
+        paymentFollowUs: '📲 Bizni kuzating: https://t.me/Rovawirst'
     },
     ru: {
         greeting: 'Здравствуйте',
@@ -217,7 +225,15 @@ const PRODUCT_COPY = {
         copyUzcardButton: '📋 Скопировать Uzcard',
         copyVisaButton: '📋 Скопировать Visa',
         paymentProofPrompt: 'Отправьте чек оплаты в виде скриншота или PDF.',
-        paymentProofAccepted: '✅ Статус оплаты установлен. Администратор проверит оплату.'
+        paymentAcceptedGreeting: '✅ Спасибо, {name}! Ваша оплата принята.',
+        paymentNextStepsTitle: '📦 ЧТО ДАЛЬШЕ:',
+        paymentNextSteps: [
+            '1️⃣ Подтвердим оплату в течение 1-2 часов',
+            '2️⃣ Лично проверим и упакуем ваш браслет'
+        ],
+        paymentWelcomeNote: '⌚ Добро пожаловать в семью ROVA!',
+        paymentSupportNote: 'Если есть вопросы — Support, отвечу лично.',
+        paymentFollowUs: '📲 Следите за нами: https://t.me/Rovawirst'
     },
     en: {
         greeting: 'Hello',
@@ -286,7 +302,15 @@ const PRODUCT_COPY = {
         copyUzcardButton: '📋 Copy Uzcard',
         copyVisaButton: '📋 Copy Visa',
         paymentProofPrompt: 'Send the payment receipt as a screenshot or PDF.',
-        paymentProofAccepted: '✅ Payment status saved. The administrator will verify the payment.'
+        paymentAcceptedGreeting: '✅ Thank you, {name}! Your payment has been received.',
+        paymentNextStepsTitle: '📦 WHAT HAPPENS NEXT:',
+        paymentNextSteps: [
+            '1️⃣ We‘ll confirm the payment within 1-2 hours',
+            '2️⃣ We‘ll personally check and package your bracelet'
+        ],
+        paymentWelcomeNote: '⌚ Welcome to the ROVA family!',
+        paymentSupportNote: 'Questions? Support — I‘ll answer personally.',
+        paymentFollowUs: '📲 Follow us: https://t.me/Rovawirst'
     }
 };
 
@@ -993,6 +1017,20 @@ function getOrderReviewInlineKeyboard(language = 'uz') {
             { text: copy.confirmEditButton, callback_data: 'confirm:edit' }
         ]]
     };
+}
+
+function buildPaymentAcceptedMessage(user, copy) {
+    return [
+        escapeHtml(copy.paymentAcceptedGreeting.replace('{name}', getFullName(user))),
+        '',
+        escapeHtml(copy.paymentNextStepsTitle),
+        ...copy.paymentNextSteps.map((line) => escapeHtml(line)),
+        '',
+        escapeHtml(copy.paymentWelcomeNote),
+        escapeHtml(copy.paymentSupportNote),
+        '',
+        escapeHtml(copy.paymentFollowUs)
+    ].join('\n');
 }
 
 function getAllLocalizedValues(fieldName) {
@@ -2970,10 +3008,11 @@ class TelegramRuntime {
             if (currentAction === 'payment-proof') {
                 this.setSupportSession(message.from?.id, false);
                 this.setPendingAction(message.from?.id, '');
+                const language = this.getUserLanguage(message.from?.id);
                 await this.sendInlineFlowText(
                     message.chat.id,
-                    getLanguageCopy(this.getUserLanguage(message.from?.id)).paymentProofAccepted,
-                    getMainMenuReplyMarkup(this.getUserLanguage(message.from?.id))
+                    buildPaymentAcceptedMessage(message.from || {}, getLanguageCopy(language)),
+                    getMainMenuReplyMarkup(language)
                 );
                 return;
             }
