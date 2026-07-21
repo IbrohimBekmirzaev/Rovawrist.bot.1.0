@@ -53,12 +53,12 @@ const TOPIC_COLORS = {
 const PRODUCT_CATALOG = {
     prod1: {
         label: 'Qora rangli',
-        orderLabel: 'ROVA - Qora rangli',
+        orderLabel: 'ROVA — Qora rangli',
         imagePath: path.join(ASSETS_DIR, 'rovawrist-black.jpg')
     },
     prod2: {
         label: 'Pushti rangli',
-        orderLabel: 'ROVA - Pushti rangli',
+        orderLabel: 'ROVA — Pushti rangli',
         imagePath: path.join(ASSETS_DIR, 'rovawrist-pink.png')
     }
 };
@@ -91,6 +91,9 @@ const PRODUCT_COPY = {
         subscriptionRequired: 'Davom etish uchun kanalga a’zo bo‘ling.',
         channelAccessError: 'Bot kanal a’zolarini tekshira olmayapti. Botni kanalga admin qiling.',
         productTitle: 'ROVA — aqlli braslet',
+        productBaseName: 'ROVA braslet',
+        orderSummaryTitle: '🧾 SIZNING BUYURTMANGIZ:',
+        colorWordByProduct: { prod1: 'qora', prod2: 'pushti' },
         priceLabel: 'Narxi',
         noteLabel: 'Eslatma',
         deliveryNote: 'Yetkazib berish to‘lovi alohida.',
@@ -119,7 +122,7 @@ const PRODUCT_COPY = {
         callbackAccepted: 'Buyurtma qabul qilindi.',
         supportPrompt: 'Support uchun pastdagi tugmadan foydalaning.',
         welcome: 'ROVA braslet buyurtma qilish uchun pastdagi tugmani bosing.',
-        phonePrompt: 'Telefon raqamingizni yozing yoki pastdagi tugma orqali avtomatik yuboring.',
+        phonePrompt: '📱 Telefon raqamingizni yozing yoki pastdagi tugma orqali avtomatik yuboring.',
         phoneExample: 'Masalan: <code>+998 90 123 45 67</code>',
         sharePhoneButton: '📞 Raqamni yuborish',
         invalidPhonePrompt: 'Telefon raqam noto‘g‘ri. Iltimos, <code>+998 90 123 45 67</code> yoki boshqa xalqaro formatda yuboring, yoxud tugma orqali ulashing.',
@@ -146,6 +149,9 @@ const PRODUCT_COPY = {
         subscriptionRequired: 'Для продолжения подпишитесь на канал.',
         channelAccessError: 'Бот не может проверить участников канала. Сделайте бота администратором канала.',
         productTitle: 'ROVA — умный браслет',
+        productBaseName: 'Браслет ROVA',
+        orderSummaryTitle: '🧾 ВАШ ЗАКАЗ:',
+        colorWordByProduct: { prod1: 'черный', prod2: 'розовый' },
         priceLabel: 'Цена',
         noteLabel: 'Примечание',
         deliveryNote: 'Стоимость доставки оплачивается отдельно.',
@@ -174,7 +180,7 @@ const PRODUCT_COPY = {
         callbackAccepted: 'Заказ принят.',
         supportPrompt: 'Для поддержки используйте кнопку ниже.',
         welcome: 'Нажмите кнопку ниже, чтобы заказать браслет ROVA.',
-        phonePrompt: 'Отправьте свой номер телефона текстом или автоматически через кнопку ниже.',
+        phonePrompt: '📱 Отправьте свой номер телефона текстом или автоматически через кнопку ниже.',
         phoneExample: 'Например: <code>+998 90 123 45 67</code>',
         sharePhoneButton: '📞 Отправить номер',
         invalidPhonePrompt: 'Неверный номер. Отправьте его в формате <code>+998 90 123 45 67</code> или в другом международном формате, либо через кнопку ниже.',
@@ -201,6 +207,9 @@ const PRODUCT_COPY = {
         subscriptionRequired: 'Please join the channel to continue.',
         channelAccessError: 'The bot cannot verify channel members. Make the bot a channel admin.',
         productTitle: 'ROVA — smart bracelet',
+        productBaseName: 'ROVA bracelet',
+        orderSummaryTitle: '🧾 YOUR ORDER:',
+        colorWordByProduct: { prod1: 'black', prod2: 'pink' },
         priceLabel: 'Price',
         noteLabel: 'Note',
         deliveryNote: 'Delivery fee is charged separately.',
@@ -229,7 +238,7 @@ const PRODUCT_COPY = {
         callbackAccepted: 'Order accepted.',
         supportPrompt: 'Use the button below for support.',
         welcome: 'Press the button below to order the ROVA bracelet.',
-        phonePrompt: 'Send your phone number as text or share it automatically using the button below.',
+        phonePrompt: '📱 Send your phone number as text or share it automatically using the button below.',
         phoneExample: 'Example: <code>+998 90 123 45 67</code>',
         sharePhoneButton: '📞 Share phone',
         invalidPhonePrompt: 'Invalid phone number. Please send it as <code>+998 90 123 45 67</code> or another international format, or share it using the button below.',
@@ -2471,8 +2480,10 @@ class TelegramRuntime {
         });
 
         await this.sendFlowText(chatId, [
-            `Tanlandi: <b>${escapeHtml(getProductLabel(resolvedProductKey))}</b>`,
-            `💵 ${escapeHtml(copy.priceLabel)}: <b>${escapeHtml(PRODUCT_PRICE_TEXT)}</b>`,
+            `✅ Tanlandi: <b>${escapeHtml(getProductLabel(resolvedProductKey))}</b>`,
+            '',
+            escapeHtml(copy.orderSummaryTitle),
+            `⌚ ${escapeHtml(copy.productBaseName)} (${escapeHtml(copy.colorWordByProduct[resolvedProductKey] || '')}) — ${escapeHtml(PRODUCT_PRICE_TEXT)}`,
             `📦 ${escapeHtml(copy.noteLabel)}: ${escapeHtml(copy.deliveryNote)}`,
             '',
             copy.phonePrompt,
