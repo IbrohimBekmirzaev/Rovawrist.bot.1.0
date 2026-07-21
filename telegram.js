@@ -138,12 +138,7 @@ const PRODUCT_COPY = {
         invalidAddressPrompt: 'Manzil noto‘g‘ri. Iltimos, ko‘cha, uy raqami va kerak bo‘lsa mo‘ljal bilan aniq manzil yuboring.',
         locationSaved: 'Kartadan aniq lokatsiya qabul qilindi.',
         paymentCaption: 'Quyidagi kartalardan biriga to‘lovni amalga oshiring.',
-        trustTitle: '🛡 Nega bizga ishonish mumkin:',
-        trustPoints: [
-            'Har bir braslet shaxsan tekshiriladi va qadoqlanadi',
-            'Instagram: @rovawrist — jarayonni jonli kuzating',
-            'Savol bo‘lsa — Support, shaxsan javob beraman'
-        ],
+        paymentSupportLine: 'Savol bo‘lsa — Support buyrug‘ini bosing va savolingizni yozishingiz mumkin, shaxsan o‘zim javob beraman.',
         paymentDoneButton: '✅ To‘lov qildim',
         copyUzcardButton: '📋 Uzcard nusxalash',
         copyVisaButton: '📋 Visa nusxalash',
@@ -215,12 +210,7 @@ const PRODUCT_COPY = {
         invalidAddressPrompt: 'Адрес указан неверно. Пожалуйста, отправьте точный адрес с улицей, номером дома и при необходимости ориентиром.',
         locationSaved: 'Точная геолокация получена.',
         paymentCaption: 'Оплатите заказ на одну из карт ниже.',
-        trustTitle: '🛡 Почему нам можно доверять:',
-        trustPoints: [
-            'Каждый браслет лично проверяется и упаковывается',
-            'Instagram: @rovawrist — следите за процессом вживую',
-            'Если есть вопросы — Support, отвечу лично'
-        ],
+        paymentSupportLine: 'Если есть вопросы — нажмите Support и напишите свой вопрос, отвечу лично.',
         paymentDoneButton: '✅ Я оплатил',
         copyUzcardButton: '📋 Скопировать Uzcard',
         copyVisaButton: '📋 Скопировать Visa',
@@ -292,12 +282,7 @@ const PRODUCT_COPY = {
         invalidAddressPrompt: 'Address is invalid. Please send a clear address with street, house number, and landmark if needed.',
         locationSaved: 'Exact map location received.',
         paymentCaption: 'Please complete the payment to one of the cards below.',
-        trustTitle: '🛡 Why you can trust us:',
-        trustPoints: [
-            'Every bracelet is personally checked and packaged',
-            'Instagram: @rovawrist — follow the process live',
-            'Questions? Support — I‘ll answer personally'
-        ],
+        paymentSupportLine: 'Questions? Tap Support and write your question — I‘ll answer personally.',
         paymentDoneButton: '✅ I paid',
         copyUzcardButton: '📋 Copy Uzcard',
         copyVisaButton: '📋 Copy Visa',
@@ -922,9 +907,8 @@ function getPaymentCaption(language = 'uz') {
         escapeHtml(PAYMENT_CARD_HOLDER),
         '',
         escapeHtml(copy.paymentCaption),
-        '',
-        escapeHtml(copy.trustTitle),
-        ...copy.trustPoints.map((line) => `- ${escapeHtml(line)}`)
+        `${escapeHtml(copy.noteLabel)}: 💰 ${escapeHtml(copy.priceLabel)}: ${escapeHtml(PRODUCT_PRICE_TEXT)}`,
+        escapeHtml(copy.paymentSupportLine)
     ].join('\n');
 }
 
