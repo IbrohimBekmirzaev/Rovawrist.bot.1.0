@@ -75,6 +75,11 @@ const MAIN_MENU_BUTTON_ORDER = 'Buyurtma berish';
 const MAIN_MENU_BUTTON_SUPPORT = 'Support';
 const PRODUCT_CALLBACK_PREFIX = 'order:';
 const SUPPORTED_LANGUAGES = ['uz', 'ru', 'en'];
+const LANGUAGE_BUTTONS = {
+    uz: 'O‘zbek',
+    ru: 'Русский',
+    en: 'English'
+};
 const PRODUCT_COPY = {
     uz: {
         greeting: 'Salom',
@@ -788,7 +793,11 @@ function getMainMenuReplyMarkup(language = 'uz') {
     return {
         inline_keyboard: [
             [{ text: copy.menuOrder, callback_data: 'menu:buy' }],
-            [{ text: copy.menuSupport, callback_data: 'menu:support' }]
+            [{ text: copy.menuSupport, callback_data: 'menu:support' }],
+            SUPPORTED_LANGUAGES.map((lang) => ({
+                text: LANGUAGE_BUTTONS[lang],
+                callback_data: `lang:${lang}`
+            }))
         ]
     };
 }
@@ -868,7 +877,11 @@ function getSubscriptionInlineKeyboard(language = 'uz') {
             ])),
             [
                 { text: `✅ ${copy.checkSubscriptionButton}`, callback_data: 'channel:check' }
-            ]
+            ],
+            SUPPORTED_LANGUAGES.map((lang) => ({
+                text: LANGUAGE_BUTTONS[lang],
+                callback_data: `lang:${lang}`
+            }))
         ]
     };
 }
@@ -2211,6 +2224,50 @@ class TelegramRuntime {
 
     async handleCallbackQuery(callbackQuery) {
         const callbackData = cleanText(callbackQuery?.data || '', 120);
+
+        if (callbackData.startsWith('lang:')) {
+            const selectedLanguage = normalizeLanguage(callbackData.slice('lang:'.length));
+            const userId = callbackQuery.from?.id;
+            const chatId = callbackQuery.message?.chat?.id;
+            const messageId = callbackQuery.message?.message_id;
+
+            this.setUserLanguage(userId, selectedLanguage);
+
+            await this.answerCallbackQuery(callbackQuery.id, {
+                text: LANGUAGE_BUTTONS[selectedLanguage] || 'OK'
+            });
+
+            if (!chatId || !messageId) {
+                return;
+            }
+
+            const copy = getLanguageCopy(selectedLanguage);
+
+            try {
+                if (await this.isUserSubscribedToRequiredChannelsCached(userId)) {
+                    await this.editMessageText(chatId, messageId, [
+                        `${escapeHtml(copy.greeting)}, <b>${escapeHtml(getFullName(callbackQuery.from || {}))}</b>!`,
+                        '',
+                        escapeHtml(copy.welcome),
+                        escapeHtml(copy.supportPrompt)
+                    ].join('\n'), getMainMenuReplyMarkup(selectedLanguage));
+                } else {
+                    await this.editMessageText(
+                        chatId,
+                        messageId,
+                        escapeHtml(copy.joinChannelPrompt),
+                        getSubscriptionInlineKeyboard(selectedLanguage)
+                    );
+                }
+            } catch (error) {
+                if (!String(error?.message || '').includes('zgarmagan')) {
+                    await this.reportError('Til almashtirishda xatolik', error, {
+                        callbackQueryId: callbackQuery?.id
+                    });
+                }
+            }
+            return;
+        }
 
         if (callbackData === 'menu:buy' || callbackData === 'menu:support') {
             const pendingAction = callbackData === 'menu:buy' ? 'buy' : 'support';
