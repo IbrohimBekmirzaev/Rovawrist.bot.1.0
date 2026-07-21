@@ -90,13 +90,29 @@ const PRODUCT_COPY = {
         subscriptionConfirmed: 'A’zolik tasdiqlandi.',
         subscriptionRequired: 'Davom etish uchun kanalga a’zo bo‘ling.',
         channelAccessError: 'Bot kanal a’zolarini tekshira olmayapti. Botni kanalga admin qiling.',
-        productTitle: 'ROVA braslet',
+        productTitle: 'ROVA — aqlli braslet',
         priceLabel: 'Narxi',
         noteLabel: 'Eslatma',
         deliveryNote: 'Yetkazib berish to‘lovi alohida.',
         colorBlack: 'Qora rangli',
         colorPink: 'Pushti rangli',
-        prompt: 'Pastdagi tugmalardan rangni tanlang.',
+        noSubscriptionNote: '✅ Obunasiz. Faqatgina sotib olish uchun to‘lov qilasiz va uning barcha qismlaridan bepul foydalana olasiz. (Oylik va yillik to‘lovlarsiz)',
+        healthSectionTitle: '📊 SALOMATLIK NAZORATI:',
+        healthFeatures: [
+            '❤️ Puls — 24/7 real vaqtda',
+            '🫁 Qondagi kislorod (SpO2)',
+            '📈 EKG funksiyasi',
+            '😴 Uyqu tahlili — chuqur va yengil fazalar',
+            '🌡 Tana harorati va tana tarkibi'
+        ],
+        lifeSectionTitle: '🏃 SPORT VA HAYOT:',
+        lifeFeatures: [
+            '👟 Qadam, masofa, kaloriya',
+            '📞 Qo‘ng‘iroq va xabar bildirishnomalari',
+            '💧 Suvga chidamli',
+            '📱 G Band ilovasi (iOS 13+ / Android 8+)'
+        ],
+        colorPrompt: '🎨 Rangni tanlang 👇',
         orderAccepted: 'Buyurtmangiz qabul qilindi',
         operatorFollowUp: 'Operator siz bilan tez orada bog‘lanadi.',
         notFound: 'Mahsulot topilmadi.',
@@ -118,20 +134,7 @@ const PRODUCT_COPY = {
         copyUzcardButton: '📋 Uzcard nusxalash',
         copyVisaButton: '📋 Visa nusxalash',
         paymentProofPrompt: 'To‘lov chekini screenshot yoki PDF ko‘rinishida yuboring.',
-        paymentProofAccepted: '✅ To‘lov qilindi statusi qo‘yildi. Administrator to‘lovni tekshiradi.',
-        features: [
-            'ROVA',
-            'Suv o‘tkazmaydi',
-            'Pulsni real vaqt rejimida o‘lchaydi',
-            'Qondagi kislorod darajasi (SpO2)',
-            'EKG funksiyasi bor',
-            'Uyqu tahlili: chuqur, yengil va umumiy',
-            'Tana tarkibi tahlili (body composition)',
-            'Tana harorati',
-            'Qadam, masofa va kaloriya',
-            'Qo‘ng‘iroq va xabar bildirishnomalari',
-            'Ilova: G Band (iOS 13+ / Android 8+, Bluetooth 5.3)'
-        ]
+        paymentProofAccepted: '✅ To‘lov qilindi statusi qo‘yildi. Administrator to‘lovni tekshiradi.'
     },
     ru: {
         greeting: 'Здравствуйте',
@@ -142,13 +145,29 @@ const PRODUCT_COPY = {
         subscriptionConfirmed: 'Подписка подтверждена.',
         subscriptionRequired: 'Для продолжения подпишитесь на канал.',
         channelAccessError: 'Бот не может проверить участников канала. Сделайте бота администратором канала.',
-        productTitle: 'Браслет ROVA',
+        productTitle: 'ROVA — умный браслет',
         priceLabel: 'Цена',
         noteLabel: 'Примечание',
         deliveryNote: 'Стоимость доставки оплачивается отдельно.',
         colorBlack: 'Черный',
         colorPink: 'Розовый',
-        prompt: 'Выберите цвет кнопками ниже.',
+        noSubscriptionNote: '✅ Без подписки. Вы платите только за покупку и пользуетесь всеми функциями бесплатно. (Без ежемесячных и годовых платежей)',
+        healthSectionTitle: '📊 КОНТРОЛЬ ЗДОРОВЬЯ:',
+        healthFeatures: [
+            '❤️ Пульс — в реальном времени 24/7',
+            '🫁 Кислород в крови (SpO2)',
+            '📈 Функция ЭКГ',
+            '😴 Анализ сна — глубокая и легкая фазы',
+            '🌡 Температура и состав тела'
+        ],
+        lifeSectionTitle: '🏃 СПОРТ И ЖИЗНЬ:',
+        lifeFeatures: [
+            '👟 Шаги, дистанция, калории',
+            '📞 Уведомления о звонках и сообщениях',
+            '💧 Водостойкий',
+            '📱 Приложение G Band (iOS 13+ / Android 8+)'
+        ],
+        colorPrompt: '🎨 Выберите цвет 👇',
         orderAccepted: 'Ваш заказ принят',
         operatorFollowUp: 'Оператор скоро свяжется с вами.',
         notFound: 'Товар не найден.',
@@ -170,20 +189,7 @@ const PRODUCT_COPY = {
         copyUzcardButton: '📋 Скопировать Uzcard',
         copyVisaButton: '📋 Скопировать Visa',
         paymentProofPrompt: 'Отправьте чек оплаты в виде скриншота или PDF.',
-        paymentProofAccepted: '✅ Статус оплаты установлен. Администратор проверит оплату.',
-        features: [
-            'ROVA',
-            'Водонепроницаемый',
-            'Пульс в реальном времени',
-            'Кислород в крови (SpO2)',
-            'ЭКГ',
-            'Анализ сна: глубокий, легкий и общий',
-            'Состав тела (body composition)',
-            'Температура тела',
-            'Шаги, дистанция и калории',
-            'Уведомления о звонках и сообщениях',
-            'Приложение: G Band (iOS 13+ / Android 8+, Bluetooth 5.3)'
-        ]
+        paymentProofAccepted: '✅ Статус оплаты установлен. Администратор проверит оплату.'
     },
     en: {
         greeting: 'Hello',
@@ -194,13 +200,29 @@ const PRODUCT_COPY = {
         subscriptionConfirmed: 'Subscription confirmed.',
         subscriptionRequired: 'Please join the channel to continue.',
         channelAccessError: 'The bot cannot verify channel members. Make the bot a channel admin.',
-        productTitle: 'ROVA bracelet',
+        productTitle: 'ROVA — smart bracelet',
         priceLabel: 'Price',
         noteLabel: 'Note',
         deliveryNote: 'Delivery fee is charged separately.',
         colorBlack: 'Black',
         colorPink: 'Pink',
-        prompt: 'Choose a color using the buttons below.',
+        noSubscriptionNote: '✅ No subscription. You pay only to buy it and use all of its features for free. (No monthly or yearly fees)',
+        healthSectionTitle: '📊 HEALTH MONITORING:',
+        healthFeatures: [
+            '❤️ Heart rate — real-time 24/7',
+            '🫁 Blood oxygen (SpO2)',
+            '📈 ECG function',
+            '😴 Sleep analysis — deep and light phases',
+            '🌡 Body temperature and body composition'
+        ],
+        lifeSectionTitle: '🏃 SPORT & LIFE:',
+        lifeFeatures: [
+            '👟 Steps, distance, calories',
+            '📞 Call and message notifications',
+            '💧 Water resistant',
+            '📱 G Band app (iOS 13+ / Android 8+)'
+        ],
+        colorPrompt: '🎨 Choose a color 👇',
         orderAccepted: 'Your order has been accepted',
         operatorFollowUp: 'Our operator will contact you soon.',
         notFound: 'Product not found.',
@@ -222,20 +244,7 @@ const PRODUCT_COPY = {
         copyUzcardButton: '📋 Copy Uzcard',
         copyVisaButton: '📋 Copy Visa',
         paymentProofPrompt: 'Send the payment receipt as a screenshot or PDF.',
-        paymentProofAccepted: '✅ Payment status saved. The administrator will verify the payment.',
-        features: [
-            'ROVA',
-            'Water resistant',
-            'Real-time heart rate',
-            'Blood oxygen (SpO2)',
-            'ECG',
-            'Sleep analysis: deep, light, and total',
-            'Body composition analysis',
-            'Body temperature',
-            'Steps, distance, and calories',
-            'Call and message notifications',
-            'App: G Band (iOS 13+ / Android 8+, Bluetooth 5.3)'
-        ]
+        paymentProofAccepted: '✅ Payment status saved. The administrator will verify the payment.'
     }
 };
 
@@ -902,12 +911,17 @@ function buildProductShowcaseCaption(language = 'uz') {
 
     return [
         `⌚ <b>${escapeHtml(copy.productTitle)}</b>`,
-        `💵 ${escapeHtml(copy.priceLabel)}: <b>${escapeHtml(PRODUCT_PRICE_TEXT)}</b>`,
-        `📦 ${escapeHtml(copy.noteLabel)}: ${escapeHtml(copy.deliveryNote)}`,
         '',
-        ...copy.features.map((line) => `• ${escapeHtml(line)}`),
+        `💰 ${escapeHtml(copy.priceLabel)}: ${escapeHtml(PRODUCT_PRICE_TEXT)}`,
+        escapeHtml(copy.noSubscriptionNote),
         '',
-        escapeHtml(copy.prompt)
+        escapeHtml(copy.healthSectionTitle),
+        ...copy.healthFeatures.map((line) => escapeHtml(line)),
+        '',
+        escapeHtml(copy.lifeSectionTitle),
+        ...copy.lifeFeatures.map((line) => escapeHtml(line)),
+        '',
+        escapeHtml(copy.colorPrompt)
     ].join('\n');
 }
 
