@@ -2387,8 +2387,6 @@ class TelegramRuntime {
             const userId = callbackQuery.from?.id;
             const chatId = callbackQuery.message?.chat?.id;
             const session = this.getOrderSession(userId);
-            const language = this.getUserLanguage(userId);
-            const copy = getLanguageCopy(language);
 
             if (!session || session.step !== 'confirm') {
                 await this.answerCallbackQuery(callbackQuery.id);
@@ -2402,21 +2400,7 @@ class TelegramRuntime {
             }
 
             if (callbackData === 'confirm:edit') {
-                session.step = 'phone';
-                delete session.order.phone;
-                delete session.order.fullName;
-                delete session.order.address;
-                delete session.order.city;
-                delete session.order.location;
-                delete session.order.message;
-                this.setOrderSession(userId, session);
-
-                await this.sendFlowText(chatId, [
-                    copy.phonePrompt,
-                    copy.phoneExample
-                ].join('\n\n'), {
-                    replyMarkup: getPhoneReplyMarkup(language)
-                });
+                await this.startOrderFlow(chatId, callbackQuery.from || {});
                 return;
             }
 
