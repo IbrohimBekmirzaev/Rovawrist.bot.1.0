@@ -898,7 +898,9 @@ function getPaymentCaption(language = 'uz') {
         escapeHtml(PAYMENT_CARD_HOLDER),
         '',
         escapeHtml(copy.paymentCaption),
-        `${escapeHtml(copy.noteLabel)}: 💰 ${escapeHtml(copy.priceLabel)}: ${escapeHtml(PRODUCT_PRICE_TEXT)}`,
+        '',
+        `<b>${escapeHtml(copy.noteLabel)}: 💰 ${escapeHtml(copy.priceLabel)}: ${escapeHtml(PRODUCT_PRICE_TEXT)}</b>`,
+        '',
         escapeHtml(copy.paymentSupportLine)
     ].join('\n');
 }
