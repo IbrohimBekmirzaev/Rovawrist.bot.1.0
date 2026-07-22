@@ -10,6 +10,8 @@ const POLLING_LOCK_HEARTBEAT_MS = 10000;
 const POLLING_LOCK_STALE_MS = 45000;
 const ASSETS_DIR = path.join(__dirname, 'assets');
 const PRODUCT_SHOWCASE_IMAGE = path.join(ASSETS_DIR, 'rovawrist-showcase.jpg');
+const PRODUCT_WRIST_PHOTO_1 = path.join(ASSETS_DIR, 'payment-photo-1.jpg');
+const PRODUCT_WRIST_PHOTO_2 = path.join(ASSETS_DIR, 'payment-photo-2.jpg');
 const REQUIRED_CHANNELS = [
     {
         username: process.env.REQUIRED_CHANNEL_1_USERNAME || '@Rovawirst',
@@ -1758,10 +1760,16 @@ class TelegramRuntime {
     async sendProductShowcase(chatId, user = {}) {
         const language = this.getUserLanguage(user.id);
 
-        await this.sendFlowPhoto(chatId, PRODUCT_SHOWCASE_IMAGE, {
-            caption: buildProductShowcaseCaption(language),
-            replyMarkup: getProductInlineKeyboard(language)
-        });
+        await this.sendMediaGroup(chatId, [
+            { filePath: PRODUCT_WRIST_PHOTO_1 },
+            { filePath: PRODUCT_WRIST_PHOTO_2 }
+        ]);
+
+        await this.sendInlineFlowText(
+            chatId,
+            buildProductShowcaseCaption(language),
+            getProductInlineKeyboard(language)
+        );
     }
 
     async sendPaymentInstructions(chatId, user = {}) {
