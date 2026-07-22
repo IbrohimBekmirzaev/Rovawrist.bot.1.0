@@ -9,9 +9,7 @@ const GLOBAL_RUNTIME_DIR = path.join(process.env.LOCALAPPDATA || os.homedir(), '
 const POLLING_LOCK_HEARTBEAT_MS = 10000;
 const POLLING_LOCK_STALE_MS = 45000;
 const ASSETS_DIR = path.join(__dirname, 'assets');
-const PRODUCT_SHOWCASE_IMAGE = path.join(ASSETS_DIR, 'rovawrist-showcase.jpg');
 const PRODUCT_WRIST_PHOTO_1 = path.join(ASSETS_DIR, 'payment-photo-1.jpg');
-const PRODUCT_WRIST_PHOTO_2 = path.join(ASSETS_DIR, 'payment-photo-2.jpg');
 const REQUIRED_CHANNELS = [
     {
         username: process.env.REQUIRED_CHANNEL_1_USERNAME || '@Rovawirst',
@@ -134,8 +132,7 @@ const PRODUCT_COPY = {
         invalidPhonePrompt: 'Telefon raqam noto‘g‘ri. Iltimos, <code>+998 90 123 45 67</code> yoki boshqa xalqaro formatda yuboring, yoxud tugma orqali ulashing.',
         fullNamePrompt: 'Endi ism va familiyangizni yuboring.',
         invalidFullNamePrompt: 'Ism va familiya noto‘g‘ri. Iltimos, faqat harflar bilan to‘liq ism va familiyangizni yuboring.',
-        addressPrompt: '📍 Yetkazib berish manzilini yuboring:\n\n✍️ Shahar, tuman, ko‘cha, uy — matn bilan yozing.\nMasalan: <i>Toshkent, Chilonzor, Bunyodkor 12, 45-uy</i>\n\n📎 <b>YOKI</b> xaritadan yuboring: skrepka → <b>Location</b> → nuqtani tanlang → <b>Send</b>\n\n⚠️ Pastdagi «📍 Joriy joylashuvni yuborish» tugmasi hozir turgan joyingizni yuboradi — boshqa manzil kerak bo‘lsa, xaritadan tanlang.',
-        locationButton: '📍 Joriy joylashuvni yuborish',
+        addressPrompt: '📍 Yetkazib berish manzilini yuboring:\n\n✍️ Shahar, tuman, ko‘cha, uy — matn bilan yozing.\nMasalan: <i>Toshkent, Chilonzor, Bunyodkor 12, 45-uy</i>\n\n📎 <b>YOKI</b> xaritadan yuboring: skrepka → <b>Location</b> → nuqtani tanlang → <b>Send</b>',
         invalidAddressPrompt: 'Manzil noto‘g‘ri. Iltimos, ko‘cha, uy raqami va kerak bo‘lsa mo‘ljal bilan aniq manzil yuboring.',
         locationSaved: 'Kartadan aniq lokatsiya qabul qilindi.',
         paymentCaption: 'Quyidagi kartalardan biriga to‘lovni amalga oshiring.',
@@ -206,8 +203,7 @@ const PRODUCT_COPY = {
         invalidPhonePrompt: 'Неверный номер. Отправьте его в формате <code>+998 90 123 45 67</code> или в другом международном формате, либо через кнопку ниже.',
         fullNamePrompt: 'Теперь отправьте имя и фамилию.',
         invalidFullNamePrompt: 'Имя и фамилия указаны неверно. Пожалуйста, отправьте полные имя и фамилию только буквами.',
-        addressPrompt: '📍 Отправьте адрес доставки:\n\n✍️ Город, район, улица, дом — напишите текстом.\nНапример: <i>Ташкент, Чиланзар, Бунёдкор 12, кв. 45</i>\n\n📎 <b>ИЛИ</b> через карту: скрепка → <b>Location</b> → отметьте точку → <b>Send</b>\n\n⚠️ Кнопка «📍 Отправить текущую геолокацию» ниже отправляет именно ваше текущее местоположение — если нужен другой адрес, выберите его на карте.',
-        locationButton: '📍 Отправить текущую геолокацию',
+        addressPrompt: '📍 Отправьте адрес доставки:\n\n✍️ Город, район, улица, дом — напишите текстом.\nНапример: <i>Ташкент, Чиланзар, Бунёдкор 12, кв. 45</i>\n\n📎 <b>ИЛИ</b> через карту: скрепка → <b>Location</b> → отметьте точку → <b>Send</b>',
         invalidAddressPrompt: 'Адрес указан неверно. Пожалуйста, отправьте точный адрес с улицей, номером дома и при необходимости ориентиром.',
         locationSaved: 'Точная геолокация получена.',
         paymentCaption: 'Оплатите заказ на одну из карт ниже.',
@@ -278,8 +274,7 @@ const PRODUCT_COPY = {
         invalidPhonePrompt: 'Invalid phone number. Please send it as <code>+998 90 123 45 67</code> or another international format, or share it using the button below.',
         fullNamePrompt: 'Now send your first and last name.',
         invalidFullNamePrompt: 'Name is invalid. Please send your full first and last name using letters only.',
-        addressPrompt: '📍 Send your delivery address:\n\n✍️ City, district, street, house — type it as text.\nExample: <i>Tashkent, Chilonzor, Bunyodkor 12, apt 45</i>\n\n📎 <b>OR</b> send via map: paperclip → <b>Location</b> → pick the spot → <b>Send</b>\n\n⚠️ The "📍 Send current location" button below sends your current position — if you need a different address, choose it on the map.',
-        locationButton: '📍 Send current location',
+        addressPrompt: '📍 Send your delivery address:\n\n✍️ City, district, street, house — type it as text.\nExample: <i>Tashkent, Chilonzor, Bunyodkor 12, apt 45</i>\n\n📎 <b>OR</b> send via map: paperclip → <b>Location</b> → pick the spot → <b>Send</b>',
         invalidAddressPrompt: 'Address is invalid. Please send a clear address with street, house number, and landmark if needed.',
         locationSaved: 'Exact map location received.',
         paymentCaption: 'Please complete the payment to one of the cards below.',
@@ -883,14 +878,9 @@ function getInputReplyMarkup() {
     };
 }
 
-function getAddressReplyMarkup(language = 'uz') {
+function getAddressReplyMarkup() {
     return {
-        keyboard: [
-            [{ text: getLanguageCopy(language).locationButton, request_location: true }]
-        ],
-        resize_keyboard: true,
-        one_time_keyboard: true,
-        is_persistent: false
+        remove_keyboard: true
     };
 }
 
@@ -1760,13 +1750,9 @@ class TelegramRuntime {
     async sendProductShowcase(chatId, user = {}) {
         const language = this.getUserLanguage(user.id);
 
-        await this.sendMediaGroup(chatId, [
-            { filePath: PRODUCT_WRIST_PHOTO_1 },
-            { filePath: PRODUCT_WRIST_PHOTO_2 }
-        ]);
-
-        await this.sendInlineFlowText(
+        await this.sendInlineFlowPhoto(
             chatId,
+            PRODUCT_WRIST_PHOTO_1,
             buildProductShowcaseCaption(language),
             getProductInlineKeyboard(language)
         );
@@ -1775,9 +1761,8 @@ class TelegramRuntime {
     async sendPaymentInstructions(chatId, user = {}) {
         const language = this.getUserLanguage(user.id);
 
-        await this.sendInlineFlowPhoto(
+        await this.sendInlineFlowText(
             chatId,
-            PRODUCT_SHOWCASE_IMAGE,
             getPaymentCaption(language),
             getPaymentInlineKeyboard(language)
         );

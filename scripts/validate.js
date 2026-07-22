@@ -17,11 +17,9 @@ const requiredFiles = [
     'telegram.js',
     'README.md',
     '.env.example',
-    path.join('assets', 'rovawrist-showcase.jpg'),
     path.join('assets', 'rovawrist-black.jpg'),
     path.join('assets', 'rovawrist-pink.png'),
-    path.join('assets', 'payment-photo-1.jpg'),
-    path.join('assets', 'payment-photo-2.jpg')
+    path.join('assets', 'payment-photo-1.jpg')
 ];
 
 const requiredEnvKeys = [
