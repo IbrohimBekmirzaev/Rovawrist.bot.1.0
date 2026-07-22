@@ -67,8 +67,6 @@ const PRODUCT_PRICE_USD = '45$';
 const PRODUCT_PRICE_UZS = '560 000 so‘m';
 const PRODUCT_PRICE_TEXT = `${PRODUCT_PRICE_USD} / ${PRODUCT_PRICE_UZS}`;
 const PRODUCT_DELIVERY_NOTE = 'Yetkazib berish to‘lovi alohida.';
-const PAYMENT_IMAGE_1 = path.join(ASSETS_DIR, 'payment-photo-1.jpg');
-const PAYMENT_IMAGE_2 = path.join(ASSETS_DIR, 'payment-photo-2.jpg');
 const PAYMENT_UZCARD = '5614 6814 2200 4352';
 const PAYMENT_VISA = '4790 9122 3315 1390';
 const PAYMENT_CARD_HOLDER = 'IZBASAROV DIOR TIMUROVICH';
@@ -1769,13 +1767,9 @@ class TelegramRuntime {
     async sendPaymentInstructions(chatId, user = {}) {
         const language = this.getUserLanguage(user.id);
 
-        await this.sendMediaGroup(chatId, [
-            { filePath: PAYMENT_IMAGE_1 },
-            { filePath: PAYMENT_IMAGE_2 }
-        ]);
-
-        await this.sendInlineFlowText(
+        await this.sendInlineFlowPhoto(
             chatId,
+            PRODUCT_SHOWCASE_IMAGE,
             getPaymentCaption(language),
             getPaymentInlineKeyboard(language)
         );
